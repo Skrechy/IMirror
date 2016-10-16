@@ -11,4 +11,4 @@ deploy:
   file: "FILE TO UPLOAD"
   skip_cleanup: true
   on:
-    branch: master
+    branch: "master"
