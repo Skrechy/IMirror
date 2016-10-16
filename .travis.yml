@@ -3,3 +3,13 @@ jdk:
   - oraclejdk8
 sudo: false
 install: true
+
+deploy:
+  provider: releases
+  user: "Skrechy"
+  password: "omit1992"
+  file: "FILE TO UPLOAD"
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
