@@ -9,8 +9,8 @@
 *****************************************************/
 
 #temperature
-/Data/temperature/'jear'/'month.txt'
+'jear'/'month.txt'
 
 
 #humidity
-/Data/humidity/'jear'/'month.txt'
+'jear'/'month.txt'
