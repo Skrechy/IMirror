@@ -1,4 +1,4 @@
-# Aufrufen mit ./tempperaturTest.py 11 17 
+# Aufrufen mit ./tempperaturTest.py 11 17
 # DH11 modul
 # GPIO 17 angeschlossen
 import sys
@@ -34,4 +34,3 @@ if humidity is not None and temperature is not None:
 else:
     print('Failed to get reading. Try again!')
     sys.exit(1)
-

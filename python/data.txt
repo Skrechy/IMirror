@@ -1,0 +1,16 @@
+/****************************************************
+* Data File for Python scripts
+* contains all folder defines for services
+*
+* Author: Mikko Eberhardt
+*
+* Updated frequently (every time new file is needed)
+* The folders are identified by '#'
+*****************************************************/
+
+#temperature
+/Data/temperature/'jear'/'month.txt'
+
+
+#humidity
+/Data/humidity/'jear'/'month.txt'
