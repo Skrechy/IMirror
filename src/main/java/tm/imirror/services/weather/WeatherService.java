@@ -1,15 +1,19 @@
-package tm.imirror.services.wheather;
+package tm.imirror.services.weather;
 
 import java.io.IOException;
+import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.json.JSONException;
 
 import net.aksingh.owmjapis.CurrentWeather;
+import net.aksingh.owmjapis.DailyForecast;
+import net.aksingh.owmjapis.HourlyForecast;
+import net.aksingh.owmjapis.HourlyForecast.Forecast;
 import net.aksingh.owmjapis.OpenWeatherMap;
 
-public class WeatherData {
+public class WeatherService extends Observable {
 
 	/**
 	 * DEFAULTS
@@ -31,7 +35,7 @@ public class WeatherData {
 	 */
 	private OpenWeatherMap owmClient; 	//client
 	private final static String OWM_API_KEY = "d40cc0844ac7fb77991e6a2d92e7f4d2";
-	private CurrentWeather currentWeather;
+	private WeatherData weatherData;
 	
 	private String cityName;
 	private String countryCode;
@@ -39,7 +43,7 @@ public class WeatherData {
 	/**
 	 * This contructor will use the default settings for Location and timings.
 	 */
-	public WeatherData() {
+	public WeatherService() {
 		this(DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_REFRESH_DELAY_SEC * 1000, DEFAULT_REFRESH_PERIOD_SEC * 1000);
 	}
 
@@ -52,7 +56,7 @@ public class WeatherData {
 	 * @param countryCode
 	 *            Country of the city.
 	 */
-	public WeatherData(String cityName, String countryCode) {
+	public WeatherService(String cityName, String countryCode) {
 		this(cityName, countryCode, DEFAULT_REFRESH_DELAY_SEC * 1000, DEFAULT_REFRESH_PERIOD_SEC * 1000);
 	}
 
@@ -69,7 +73,9 @@ public class WeatherData {
 	 * @param refreshPeriodMSec
 	 *            Refresh period in milliseconds for weather information.
 	 */
-	public WeatherData(String cityName, String countryCode, int refreshDelayMSec, int refreshPeriodMSec) {
+	public WeatherService(String cityName, String countryCode, int refreshDelayMSec, int refreshPeriodMSec) {
+		weatherData = new WeatherData();
+		
 		owmClient = new OpenWeatherMap(OWM_API_KEY);
 		
 		this.refreshDelay = refreshDelayMSec;
@@ -94,25 +100,37 @@ public class WeatherData {
 	 * It will periodically be called by timer.
 	 */
 	public void refresh() {
-		System.out.println("Tick");
-		
 		try {
 			// getting current weather data for the "London" city
 	        CurrentWeather currentWeather = owmClient.currentWeatherByCityName(cityName, countryCode);
-
-	        System.out.println("Whole: " + currentWeather.getDateTime());
+	        //HourlyForecast hourlyForecast = owmClient.hourlyForecastByCityName(cityName, countryCode);
+	        //DailyForecast dailyForecast = owmClient.dailyForecastByCityName(cityName, countryCode, count);
+	        this.weatherData.setCurrentWeather(currentWeather);
 	        
-	        //printing city name from the retrieved data
-	        System.out.println("City: " + currentWeather.getCityName());
-
-	        // printing the max./min. temperature
-	        System.out.println("Temperature: " + currentWeather.getMainInstance().getMaxTemperature()
-	                            + "/" + currentWeather.getMainInstance().getMinTemperature() + "\'F");
+	        if(countObservers()>0){
+	        	setChanged();
+	        	notifyObservers();
+	        }
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public IWeatherData getWeatherData(){
+		return weatherData;
+	}
+	
+	@Override
+	public String toString() {
+		String ret = "";
+		if(weatherData != null){
+			ret += "{WeatherService:";
+			ret += weatherData.toString();
+			ret += "}";
+		}
+		return ret;
 	}
 
 }
