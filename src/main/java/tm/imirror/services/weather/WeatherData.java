@@ -25,7 +25,7 @@ public class WeatherData implements IWeatherData {
 	public void setCurrentWeather(CurrentWeather currentWeather) {
 		boolean set = false;
 		
-		if(hasWeatherInformation()){
+		if(hasCurrentWeatherData()){
 			if (currentWeather != null) {
 				if (currentWeather.getDateTime() != null) {
 					if (getDateTime() != null) {
@@ -50,7 +50,7 @@ public class WeatherData implements IWeatherData {
 	public String toString() {
 		String ret = "{";
 		ret += "WeatherData:{";
-		if(hasWeatherInformation()){
+		if(hasCurrentWeatherData()){
 			if (currentWeather.hasDateTime()) {
 				ret += currentWeather.getDateTime();
 			}
@@ -62,7 +62,7 @@ public class WeatherData implements IWeatherData {
 			
 			ret += ",";
 			if (currentWeather.getMainInstance().hasTemperature()) {
-				ret += currentWeather.getMainInstance().getTemperature() + "'F";
+				ret += currentWeather.getMainInstance().getTemperature() + "°C";
 			}
 			
 			ret += ",";
@@ -78,13 +78,13 @@ public class WeatherData implements IWeatherData {
 	}
 
 	@Override
-	public boolean hasWeatherInformation() {
+	public boolean hasCurrentWeatherData() {
 		return (currentWeather != null);
 	}
 
 	@Override
 	public Date getDateTime() {
-		if(hasWeatherInformation()){
+		if(hasCurrentWeatherData()){
 			return currentWeather.getDateTime();
 		} else {
 			return null;
@@ -93,7 +93,7 @@ public class WeatherData implements IWeatherData {
 
 	@Override
 	public String getCityName() {
-		if(hasWeatherInformation()){
+		if(hasCurrentWeatherData()){
 			return currentWeather.getCityName();
 		} else {
 			return null;
@@ -102,7 +102,7 @@ public class WeatherData implements IWeatherData {
 
 	@Override
 	public float getTemperature() {
-		if(hasWeatherInformation()){
+		if(hasCurrentWeatherData()){
 			return currentWeather.getMainInstance().getTemperature();
 		} else {
 			return Float.NaN;
@@ -111,7 +111,7 @@ public class WeatherData implements IWeatherData {
 
 	@Override
 	public float getHumidity() {
-		if(hasWeatherInformation()){
+		if(hasCurrentWeatherData()){
 			return currentWeather.getMainInstance().getHumidity();
 		} else {
 			return Float.NaN;

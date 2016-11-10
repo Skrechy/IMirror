@@ -10,8 +10,9 @@ import org.json.JSONException;
 import net.aksingh.owmjapis.CurrentWeather;
 import net.aksingh.owmjapis.DailyForecast;
 import net.aksingh.owmjapis.HourlyForecast;
-import net.aksingh.owmjapis.HourlyForecast.Forecast;
 import net.aksingh.owmjapis.OpenWeatherMap;
+import net.aksingh.owmjapis.OpenWeatherMap.Language;
+import net.aksingh.owmjapis.OpenWeatherMap.Units;
 
 public class WeatherService extends Observable {
 
@@ -22,6 +23,7 @@ public class WeatherService extends Observable {
 	private final static int DEFAULT_REFRESH_PERIOD_SEC = 60;
 	private final static String DEFAULT_CITY = "Hamburg";
 	private final static String DEFAULT_COUNTRY = "DE";
+	private final static byte BYTE_COUNT_FORECAST = 5;
 
 	/**
 	 * TIMER
@@ -35,7 +37,9 @@ public class WeatherService extends Observable {
 	 */
 	private OpenWeatherMap owmClient; 	//client
 	private final static String OWM_API_KEY = "d40cc0844ac7fb77991e6a2d92e7f4d2";
-	private WeatherData weatherData;
+	private WeatherData currentWeatherData;
+	private HourlyForecast hourlyForecastData;
+	private DailyForecast dailyForecastData;
 	
 	private String cityName;
 	private String countryCode;
@@ -74,9 +78,9 @@ public class WeatherService extends Observable {
 	 *            Refresh period in milliseconds for weather information.
 	 */
 	public WeatherService(String cityName, String countryCode, int refreshDelayMSec, int refreshPeriodMSec) {
-		weatherData = new WeatherData();
+		currentWeatherData = new WeatherData();
 		
-		owmClient = new OpenWeatherMap(OWM_API_KEY);
+		owmClient = new OpenWeatherMap(Units.METRIC, OWM_API_KEY);
 		
 		this.refreshDelay = refreshDelayMSec;
 		this.refreshPeriod = refreshPeriodMSec;
@@ -101,12 +105,15 @@ public class WeatherService extends Observable {
 	 */
 	public void refresh() {
 		try {
-			// getting current weather data for the "London" city
+			// update data from server.
 	        CurrentWeather currentWeather = owmClient.currentWeatherByCityName(cityName, countryCode);
-	        //HourlyForecast hourlyForecast = owmClient.hourlyForecastByCityName(cityName, countryCode);
-	        //DailyForecast dailyForecast = owmClient.dailyForecastByCityName(cityName, countryCode, count);
-	        this.weatherData.setCurrentWeather(currentWeather);
+	        HourlyForecast hourlyForecast = owmClient.hourlyForecastByCityName(cityName, countryCode);
+	        DailyForecast dailyForecast = owmClient.dailyForecastByCityName(cityName, countryCode, BYTE_COUNT_FORECAST);
+	       
+	        // update date interfaces.
+	        this.currentWeatherData.setCurrentWeather(currentWeather);
 	        
+	        // notify observers.
 	        if(countObservers()>0){
 	        	setChanged();
 	        	notifyObservers();
@@ -115,19 +122,19 @@ public class WeatherService extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
-	public IWeatherData getWeatherData(){
-		return weatherData;
+	
+	public IWeatherData getCurrentWeatherData(){
+		return currentWeatherData;
 	}
 	
 	@Override
 	public String toString() {
 		String ret = "";
-		if(weatherData != null){
+		if(currentWeatherData != null){
 			ret += "{WeatherService:";
-			ret += weatherData.toString();
+			ret += currentWeatherData.toString();
 			ret += "}";
 		}
 		return ret;

@@ -8,7 +8,7 @@ public interface IWeatherData {
 	 * Check if the weather information is set.
 	 * @return true if weather information available otherwise false.
 	 */
-	public boolean hasWeatherInformation();
+	public boolean hasCurrentWeatherData();
 	
 	/**
 	 * Getter for the date time of the currently stored weather information.
